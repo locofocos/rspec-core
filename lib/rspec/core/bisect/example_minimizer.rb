@@ -45,6 +45,9 @@ module RSpec
         def bisect_over(candidate_ids)
           return if candidate_ids.one?
 
+          puts '=== RESETTING DB ===='
+          puts `rails db:drop && rails db:create && rails db:migrate && rails db:migrate RAILS_ENV=test`
+          
           notify(
             :bisect_round_started,
             :candidate_range => example_range(candidate_ids),
@@ -113,6 +116,9 @@ module RSpec
         def prep
           notify(:bisect_starting, :original_cli_args => shell_command.original_cli_args,
                                    :bisect_runner => runner.class.name)
+          
+          puts '=== RESETTING DB ===='
+          puts `rails db:drop && rails db:create && rails db:migrate && rails db:migrate RAILS_ENV=test`
 
           _, duration = track_duration do
             original_results    = runner.original_results
